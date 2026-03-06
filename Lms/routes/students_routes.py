@@ -1,16 +1,38 @@
 from flask import *
+from models import *
+from db import db
 student_bp=Blueprint("student",__name__)
 
+# student register
 @student_bp.route("/student-register",methods=["POST","GET"])
 def student_register():
     if request.method=="POST":
-        full_name=request.form.get("full_name")
-        return full_name
+        form_stu_name=request.form.get("stu_name")
+        form_stu_age=request.form.get("stu_age")
+        form_stu_email=request.form.get("stu_email")
+        form_stu_phone=request.form.get("stu_phone")
+        form_stu_address=request.form.get("stu_address")
+
+        try:
+            stu_data=Student(
+            stu_name=form_stu_name,
+            stu_age=form_stu_age,
+            stu_email=form_stu_email,
+            stu_phone=form_stu_phone,
+            stu_address=form_stu_address,
+        )
+            db.session.add(stu_data)
+            db.session.commit()
+            return redirect(url_for("student.all_students_data"))
         
+        except Exception as e:
+            return str(e)  
+    
     else:
         return render_template("students/register-student.html")
 
 
-@student_bp.route("/student-login")
-def student_login():
-    return "Login here for students."
+
+@student_bp.route("/all-student")
+def all_students_data():
+    return render_template("students/all_students.html")
