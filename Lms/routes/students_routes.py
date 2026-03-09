@@ -35,4 +35,10 @@ def student_register():
 
 @student_bp.route("/all-student")
 def all_students_data():
-    return render_template("students/all_students.html")
+    get_students=Student.query.all() # select * from student
+    return render_template("students/all_students.html",students=get_students)
+
+@student_bp.route("/student-details/<int:id>")
+def students_details(id):
+   get_stu=Student.query.get(id)
+   return render_template("students/student-details.html",student=get_stu)

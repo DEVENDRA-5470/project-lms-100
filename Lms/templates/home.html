@@ -6,7 +6,23 @@
     <title>Document</title>
 </head>
 <body>
-    Welcome to MyLibrary 
-    Welcome to IQINDIA
+    <center><H1>Welcome To MyLibrary</H1></center>
+    <center>
+        <a href="{{url_for('student.student_register')}}">
+        <button style="padding: 20px; font-size: 20px;">Register As Student</button>
+        </a>
+    </center>
+    <br>
+    <center>
+        <a href="">
+        <button style="padding: 20px; font-size: 20px;">Register As Author</button>
+    </a>
+    </center>
+    <br>
+     <center>
+        <a href="{{url_for('student.all_students_data')}}">
+        <button style="padding: 20px; font-size: 20px;">Show all Students</button>
+    </a>
+    </center>
 </body>
 </html>
