@@ -1,28 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyLibrary</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
 </head>
-<body>
-    <center><H1>Welcome To MyLibrary</H1></center>
-    <center>
-        <a href="{{url_for('student.student_register')}}">
-        <button style="padding: 20px; font-size: 20px;">Register As Student</button>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+<div class="bg-white shadow-xl rounded-xl w-[700px] p-10">
+
+    <div class="text-center mb-10">
+        <h1 class="text-3xl font-bold text-gray-800">
+            MyLibrary
+        </h1>
+        <p class="text-gray-500 mt-2">
+            Library Management Portal
+        </p>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="grid grid-cols-2 gap-5">
+
+        <a href="{{url_for('student.student_register')}}" class="block">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    Register as Student
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Create a new student account in the system
+                </p>
+            </div>
         </a>
-    </center>
-    <br>
-    <center>
-        <a href="">
-        <button style="padding: 20px; font-size: 20px;">Register As Author</button>
-    </a>
-    </center>
-    <br>
-     <center>
-        <a href="{{url_for('student.all_students_data')}}">
-        <button style="padding: 20px; font-size: 20px;">Show all Students</button>
-    </a>
-    </center>
+
+        <a href="" class="block">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    Register as Author
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Add a new author to the library database
+                </p>
+            </div>
+        </a>
+
+        <a href="{{url_for('student.all_students_data')}}" class="block">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    View All Students
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Browse and manage registered students
+                </p>
+            </div>
+        </a>
+
+        <a href="" class="block">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    View All Authors
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Browse and manage registered authors
+                </p>
+            </div>
+        </a>
+
+        <!-- Full width last row -->
+        <a href="" class="block col-span-2">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    View All Books
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Browse and manage library books
+                </p>
+            </div>
+        </a>
+
+    </div>
+
+</div>
+
 </body>
 </html>

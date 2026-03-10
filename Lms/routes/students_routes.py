@@ -20,6 +20,7 @@ def student_register():
             stu_email=form_stu_email,
             stu_phone=form_stu_phone,
             stu_address=form_stu_address,
+            role="student"
         )
             db.session.add(stu_data)
             db.session.commit()
@@ -42,3 +43,26 @@ def all_students_data():
 def students_details(id):
    get_stu=Student.query.get(id)
    return render_template("students/student-details.html",student=get_stu)
+
+@student_bp.route("/student-delete/<int:id>")
+def students_delete(id):
+    student=Student.query.get_or_404(id)
+    db.session.delete(student)
+    db.session.commit()
+    return redirect(url_for("student.all_students_data"))
+
+
+@student_bp.route("/student-update/<int:id>",methods=["GET","POST"])
+def students_update(id):
+    student=Student.query.get_or_404(id)
+    if request.method=="POST":
+        student.stu_name=request.form.get("stu_name")
+        student.stu_age=request.form.get("stu_age")
+        student.stu_email=request.form.get("stu_email")
+        student.stu_phone=request.form.get("stu_phone")
+        student.stu_address=request.form.get("stu_address")
+        
+        db.session.commit()
+        return redirect(url_for("student.all_students_data"))
+
+    return render_template("students/update-student.html",student=student)

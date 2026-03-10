@@ -8,3 +8,4 @@ class Student(db.Model):
     stu_email=db.Column(db.String(100),unique=True)
     stu_phone=db.Column(db.String(10),nullable=False,unique=True)
     stu_address=db.Column(db.String(100),nullable=False)
+    role=db.Column(db.String(20),nullable=False)

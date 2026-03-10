@@ -1,38 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>All Students</h1>
-    <table cellpadding="3" border="1" style="width: 100%; border-collapse: collapse;" >
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th colspan="3">Action</th>
-        </tr>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Students</title>
 
-    {% for stu in students %}
-    <tr>
-        <td>{{stu.id}}</td>
-        <td>{{stu.stu_name}}</td>
-        <td>{{stu.stu_age}}</td>
-        <td>{{stu.stu_email}}</td>
-        <td>{{stu.stu_phone}}</td>
-        <td>{{stu.stu_address}}</td>
-        <td><a href="{{url_for('student.students_details',id=stu.id)}}"><button>Read</button></a></td>
-        <td><a href=""><button>Delete</button></a></td>
-        <td><a href=""><button>Update</button></a></td>
-    </tr>
-    {% endfor %}
-      </table>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+
+</head>
+
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen p-10">
+
+<div class="max-w-7xl mx-auto">
+
+{% if students %}
+
+<!-- Header -->
+<div class="flex justify-between items-center mb-8">
+
+<div>
+<h1 class="text-3xl font-bold text-gray-800">Students</h1>
+<p class="text-gray-500">Manage students</p>
+</div>
+
+<a href="{{url_for('student.student_register')}}">
+<button class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
+<i data-feather="user-plus"></i>
+Add Student
+</button>
+</a>
+
+</div>
+
+<!-- Card Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+{% for stu in students %}
+
+<div class="bg-white rounded-xl shadow hover:shadow-lg transition p-6 text-center">
+
+<!-- Avatar -->
+<div class="w-14 h-14 mx-auto rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-lg font-bold mb-3">
+{{stu.stu_name[0]}}
+</div>
+
+<!-- Name -->
+<h2 class="font-semibold text-gray-800">
+{{stu.stu_name}}
+</h2>
+
+<!-- Email -->
+<p class="text-sm text-gray-500 mb-4">
+{{stu.stu_email}}
+</p>
+
+<!-- Actions -->
+<div class="flex justify-center gap-3">
+
+<a href="{{url_for('student.students_details',id=stu.id)}}"
+class="p-2 bg-indigo-100 text-indigo-600 rounded-lg hover:bg-indigo-200">
+<i data-feather="eye"></i>
+</a>
+
+<a href="{{url_for('student.students_update',id=stu.id)}}"
+class="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200">
+<i data-feather="edit"></i>
+</a>
+
+<a href="{{url_for('student.students_delete',id=stu.id)}}"
+onclick="return confirm('Delete this student?')"
+class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+<i data-feather="trash-2"></i>
+</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<!-- Empty State -->
+<div class="text-center mt-20">
+
+<h1 class="text-3xl font-semibold text-gray-800 mb-3">
+No Students Found
+</h1>
+
+<p class="text-gray-500 mb-6">
+Add your first student to get started
+</p>
+
+<a href="{{url_for('student.student_register')}}">
+<button class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+Add Student
+</button>
+</a>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<script>
+feather.replace()
+</script>
+
 </body>
 </html>
-
-select * from student where id=1
