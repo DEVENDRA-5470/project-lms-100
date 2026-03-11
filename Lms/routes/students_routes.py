@@ -1,9 +1,14 @@
 from flask import *
 from models import *
 from db import db
+from flask_bcrypt import Bcrypt
+from utils.auth import login_required
 student_bp=Blueprint("student",__name__)
 
+bcrypt=Bcrypt()
+
 # student register
+
 @student_bp.route("/student-register",methods=["POST","GET"])
 def student_register():
     if request.method=="POST":
@@ -12,6 +17,9 @@ def student_register():
         form_stu_email=request.form.get("stu_email")
         form_stu_phone=request.form.get("stu_phone")
         form_stu_address=request.form.get("stu_address")
+        form_stu_password=request.form.get("stu_password")
+        
+        hashed_password=bcrypt.generate_password_hash(form_stu_password).decode("utf-8")
 
         try:
             stu_data=Student(
@@ -20,6 +28,7 @@ def student_register():
             stu_email=form_stu_email,
             stu_phone=form_stu_phone,
             stu_address=form_stu_address,
+            stu_password=hashed_password,
             role="student"
         )
             db.session.add(stu_data)
@@ -35,16 +44,19 @@ def student_register():
 
 
 @student_bp.route("/all-student")
+@login_required
 def all_students_data():
     get_students=Student.query.all() # select * from student
     return render_template("students/all_students.html",students=get_students)
 
 @student_bp.route("/student-details/<int:id>")
+@login_required
 def students_details(id):
    get_stu=Student.query.get(id)
    return render_template("students/student-details.html",student=get_stu)
 
 @student_bp.route("/student-delete/<int:id>")
+@login_required
 def students_delete(id):
     student=Student.query.get_or_404(id)
     db.session.delete(student)
@@ -53,6 +65,7 @@ def students_delete(id):
 
 
 @student_bp.route("/student-update/<int:id>",methods=["GET","POST"])
+@login_required
 def students_update(id):
     student=Student.query.get_or_404(id)
     if request.method=="POST":

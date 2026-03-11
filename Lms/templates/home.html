@@ -15,17 +15,61 @@
 
     <div class="text-center mb-10">
         <h1 class="text-3xl font-bold text-gray-800">
-            MyLibrary
+            {% if session.get("name") %}
+            Welcome {{session.get("name")}} to MyLibrary
+            {% else %}
+            Welcome to MyLibrary
+            {% endif %}
         </h1>
         <p class="text-gray-500 mt-2">
             Library Management Portal
         </p>
     </div>
+   
+
 
     <!-- Grid Layout -->
     <div class="grid grid-cols-2 gap-5">
 
-        <a href="{{url_for('student.student_register')}}" class="block">
+    {% if "user_id" in session %}
+        <a href="{{url_for('user_logout')}}"><button>Logout</button></a>
+
+            <a href="{{url_for('student.student_register')}}" class="block">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    Register as Student
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Create a new student account in the system
+                </p>
+            </div>
+        </a>
+
+        <a href="{{url_for('student.all_students_data')}}" class="block">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    View All Students
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Browse and manage registered students
+                </p>
+            </div>
+        </a>
+         <!-- Full width last row -->
+        <a href="" class="block col-span-2">
+            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer">
+                <h2 class="text-lg font-semibold text-gray-700">
+                    View All Books
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Browse and manage library books
+                </p>
+            </div>
+        </a>
+    {% else %}
+        <a href="{{url_for('user_login')}}"><button>Login</button></a>
+
+              <a href="{{url_for('student.student_register')}}" class="block">
             <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
                 <h2 class="text-lg font-semibold text-gray-700">
                     Register as Student
@@ -46,40 +90,8 @@
                 </p>
             </div>
         </a>
+    {% endif %}
 
-        <a href="{{url_for('student.all_students_data')}}" class="block">
-            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
-                <h2 class="text-lg font-semibold text-gray-700">
-                    View All Students
-                </h2>
-                <p class="text-sm text-gray-500">
-                    Browse and manage registered students
-                </p>
-            </div>
-        </a>
-
-        <a href="" class="block">
-            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer h-full">
-                <h2 class="text-lg font-semibold text-gray-700">
-                    View All Authors
-                </h2>
-                <p class="text-sm text-gray-500">
-                    Browse and manage registered authors
-                </p>
-            </div>
-        </a>
-
-        <!-- Full width last row -->
-        <a href="" class="block col-span-2">
-            <div class="border rounded-lg p-5 hover:bg-gray-50 hover:shadow-md transition cursor-pointer">
-                <h2 class="text-lg font-semibold text-gray-700">
-                    View All Books
-                </h2>
-                <p class="text-sm text-gray-500">
-                    Browse and manage library books
-                </p>
-            </div>
-        </a>
 
     </div>
 

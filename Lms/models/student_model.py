@@ -7,5 +7,6 @@ class Student(db.Model):
     stu_age=db.Column(db.DateTime,nullable=False)
     stu_email=db.Column(db.String(100),unique=True)
     stu_phone=db.Column(db.String(10),nullable=False,unique=True)
+    stu_password=db.Column(db.String(200),nullable=False)
     stu_address=db.Column(db.String(100),nullable=False)
     role=db.Column(db.String(20),nullable=False)
