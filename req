@@ -1,26 +1,13 @@
-services:
-  mysql:
-    image: mysql:8
-    container_name: mysql_db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - "${MYSQL_PORT}:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+#!/bin/bash
 
-  fastapi:
-    build: .
-    container_name: fastapi_app
-    restart: on-failure
-    depends_on:
-      - mysql
-    ports:
-      - "${FASTAPI_PORT}:8000"
-    env_file:
-      - .env
+mysql -h yourendpoint -u admin -p <<EOF
 
-volumes:
-  mysql_data:
+CREATE DATABASE my_library;
+
+CREATE USER 'my_library'@'%' IDENTIFIED BY 'nhipata_123';
+
+GRANT ALL PRIVILEGES ON my_library.* TO 'my_library'@'%';
+
+FLUSH PRIVILEGES;
+
+EOF
