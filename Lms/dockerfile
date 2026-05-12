@@ -1,0 +1,38 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Prevent Python cache files
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Enable direct terminal logging
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y gcc default-libmysqlclient-dev pkg-config && \
+    apt-get clean
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Copy requirements first for better Docker cache
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project files
+COPY . .
+
+# Create non-root user
+RUN useradd -m appuser
+
+# Change ownership
+RUN chown -R appuser:appuser /app
+
+# Switch user
+USER appuser
+
+EXPOSE 5000
+
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
