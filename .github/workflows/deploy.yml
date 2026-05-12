@@ -19,6 +19,7 @@ jobs:
                 username: ubuntu
                 key: ${{secrets.SERVER_SSH_KEY}}
                 script: |
+                  set -e
                   echo "Connected to EC2 ✅"
                   
                   python3 --version
