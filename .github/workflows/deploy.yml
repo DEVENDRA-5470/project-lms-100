@@ -27,50 +27,252 @@ jobs:
 
           script: |
 
-            set -e
+            set +e
 
-            echo "Connected to EC2 ✅"
+            print_section() {
+              echo ""
+              echo "=================================================="
+              echo "$1"
+              echo "=================================================="
+            }
 
-            echo "Updating packages..."
-            sudo apt update -y
+            pass() {
+              echo "✅ PASS - $1"
+            }
 
-            echo "Checking Docker installation..."
+            fail() {
+              echo "❌ FAIL - $1"
+              exit 1
+            }
 
-            if ! command -v docker &> /dev/null
-            then
-              echo "Docker not found. Installing Docker..."
+            warn() {
+              echo "⚠️ WARNING - $1"
+            }
 
-              sudo apt install docker.io -y
 
-              sudo systemctl enable docker
-              sudo systemctl start docker
+            print_section "EC2 CONNECTION"
 
-              sudo usermod -aG docker ubuntu
+            pass "SSH Connection Successful"
 
-              echo "Docker installed successfully ✅"
 
+
+            print_section "PACKAGE UPDATE"
+
+            sudo apt update -y > /dev/null 2>&1
+
+            if [ $? -eq 0 ]; then
+              pass "APT Package Update Completed"
             else
-              echo "Docker already installed ✅"
+              fail "APT Package Update Failed"
             fi
 
-            echo "Docker Version:"
+
+
+            print_section "DOCKER INSTALLATION CHECK"
+
+            if command -v docker &> /dev/null
+            then
+              pass "Docker Already Installed"
+
+            else
+
+              warn "Docker Not Found"
+
+              sudo apt install docker.io -y > /dev/null 2>&1
+
+              if [ $? -eq 0 ]; then
+                pass "Docker Installed Successfully"
+              else
+                fail "Docker Installation Failed"
+              fi
+
+              sudo systemctl enable docker > /dev/null 2>&1
+              sudo systemctl start docker > /dev/null 2>&1
+              sudo usermod -aG docker ubuntu
+
+              pass "Docker Service Started"
+            fi
+
+
+
+            print_section "DOCKER VERSION"
+
             docker --version
 
-            echo "Python Version:"
+            if [ $? -eq 0 ]; then
+              pass "Docker Working Properly"
+            else
+              fail "Docker Command Failed"
+            fi
+
+
+
+            print_section "PYTHON VERSION"
+
             python3 --version
 
-            echo "Disk Usage:"
+            if [ $? -eq 0 ]; then
+              pass "Python Available"
+            else
+              fail "Python Not Found"
+            fi
+
+
+
+            print_section "DISK USAGE"
+
             df -h
+
+            if [ $? -eq 0 ]; then
+              pass "Disk Usage Retrieved"
+            else
+              fail "Disk Usage Check Failed"
+            fi
+
+
+
+            print_section "HOSTNAME CONFIGURATION"
 
             sudo hostnamectl set-hostname "${{ env.HOSTNAME }}"
 
+            if [ $? -eq 0 ]; then
+              pass "Hostname Updated"
+            else
+              fail "Hostname Update Failed"
+            fi
+
             echo "Current Hostname: $(hostname)"
 
-            echo "===== OPEN PORTS ====="
+
+
+            print_section "OPEN PORTS"
+
             sudo ss -tulnp
-            echo "Open Ports using netstat:"
-            sudo netstat -tulnp || true
-            echo "===== DOCKER CONTAINERS ====="
-            docker ps -a || true
-            echo "===== RUNNING SERVICES ====="
-            sudo systemctl list-units --type=service --state=running
+
+            if [ $? -eq 0 ]; then
+              pass "Port Scan Completed"
+            else
+              fail "Port Scan Failed"
+            fi
+
+
+
+            print_section "PORT VALIDATION"
+
+            if sudo ss -tulnp | grep -q ":22 "
+            then
+              pass "SSH Port 22 Listening"
+            else
+              fail "SSH Port 22 Not Listening"
+            fi
+
+            if sudo ss -tulnp | grep -q ":80 "
+            then
+              pass "Port 80 Active"
+            else
+              warn "Port 80 Not Active"
+            fi
+
+            if sudo ss -tulnp | grep -q ":443 "
+            then
+              pass "Port 443 Active"
+            else
+              warn "Port 443 Not Active"
+            fi
+
+            if sudo ss -tulnp | grep -q ":5000 "
+            then
+              pass "Port 5000 Active"
+            else
+              warn "Port 5000 Not Active"
+            fi
+
+
+
+            print_section "NETSTAT CHECK"
+
+            if command -v netstat &> /dev/null
+            then
+              sudo netstat -tulnp
+              pass "Netstat Available"
+            else
+              warn "netstat Not Installed"
+            fi
+
+
+
+            print_section "DOCKER CONTAINER CHECK"
+
+            docker ps -a
+
+            if [ $? -eq 0 ]; then
+              pass "Docker Containers Listed"
+            else
+              fail "Docker Container Check Failed"
+            fi
+
+            CONTAINER_COUNT=$(docker ps -aq | wc -l)
+
+            if [ "$CONTAINER_COUNT" -gt 0 ]
+            then
+              pass "Containers Exist on Server"
+            else
+              warn "No Docker Containers Found"
+            fi
+
+
+
+            print_section "DOCKER SERVICE STATUS"
+
+            sudo systemctl is-active docker > /dev/null 2>&1
+
+            if [ $? -eq 0 ]; then
+              pass "Docker Service Running"
+            else
+              fail "Docker Service Not Running"
+            fi
+
+
+
+            print_section "RUNNING SERVICES"
+
+            sudo systemctl list-units --type=service --state=running --no-pager
+
+
+
+            print_section "MEMORY USAGE"
+
+            free -h
+
+            if [ $? -eq 0 ]; then
+              pass "Memory Usage Retrieved"
+            else
+              fail "Memory Check Failed"
+            fi
+
+
+
+            print_section "CPU LOAD"
+
+            uptime
+
+            if [ $? -eq 0 ]; then
+              pass "CPU Load Retrieved"
+            else
+              fail "CPU Load Check Failed"
+            fi
+
+
+
+            print_section "FINAL PIPELINE STATUS"
+
+            echo ""
+            echo "🎉 SERVER VALIDATION COMPLETED SUCCESSFULLY"
+            echo ""
+            echo "Summary:"
+            echo "✅ EC2 Reachable"
+            echo "✅ Docker Ready"
+            echo "✅ Python Ready"
+            echo "✅ SSH Port Active"
+            echo "✅ Server Healthy"
+            echo ""
