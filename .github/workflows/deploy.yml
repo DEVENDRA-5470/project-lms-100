@@ -65,3 +65,12 @@ jobs:
             sudo hostnamectl set-hostname "${{ env.HOSTNAME }}"
 
             echo "Current Hostname: $(hostname)"
+
+            echo "===== OPEN PORTS ====="
+            sudo ss -tulnp
+            echo "Open Ports using netstat:"
+            sudo netstat -tulnp || true
+            echo "===== DOCKER CONTAINERS ====="
+            docker ps -a || true
+            echo "===== RUNNING SERVICES ====="
+            sudo systemctl list-units --type=service --state=running
