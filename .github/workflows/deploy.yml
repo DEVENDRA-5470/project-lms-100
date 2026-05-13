@@ -90,7 +90,7 @@ jobs:
               sudo systemctl start docker > /dev/null 2>&1
               sudo usermod -aG docker ubuntu
 
-              pass "Docker Service Started"
+              pass "Docker Service Starteded"
             fi
 
 
@@ -236,7 +236,7 @@ jobs:
 
             print_section "RUNNING SERVICES"
 
-            sudo systemctl list-units --type=service --state=running --no-pager
+            # sudo systemctl list-units --type=service --state=running --no-pager
 
 
 
